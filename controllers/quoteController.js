@@ -62,11 +62,48 @@ async function prepareDB() {
     }
 }
 
+async function deleteById(id) {
+    try {
+        const result = await Quote.deleteById(id);
+    } catch (err){
+        console.error(err);
+        return null;
+    }
+}
+
+async function updateById(id, quote) {
+    try {
+        const result = await Quote.updateByIdById(id, quote);
+    } catch (err){
+        console.error(err);
+        return null;
+    }
+}
+
+async function insertOne(quote) {
+    try {
+        const result = await Quote.insertOne(quote);
+        if( result && result.insertedId){
+            return result;
+        } else {
+            return null;
+        }
+    } catch (err){
+        console.error(err);
+        return null;
+    }
+}
+
+
+
 module.exports = {
     getQuote,
     getQuotes,
     getRandom,
-    prepareDB
+    prepareDB,
+    deleteById,
+    updateById,
+    insertOne
 }
 
 
