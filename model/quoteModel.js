@@ -18,7 +18,7 @@ function saveAll(quotes) {
 function getAll() {
     return new Promise( async (resolve, reject) => {
         const collection = await MongoSingleton.getCollection();  
-        const cursor =  await collection.find();
+        const cursor = await collection.find();
         const results = await cursor.toArray(); 
 
         if (results.length > 0) {
@@ -43,46 +43,48 @@ function getById(id) {
     } );
 } 
 
-
 function deleteById(id) {
     return new Promise( async (resolve, reject) => {
         const collection = await MongoSingleton.getCollection();
         const result = await collection.deleteMany({_id: ObjectId(id)});
 
-        if (result && result.deletedCount > 0){
+        if (result && result.deletedCount > 0) {
             resolve(result);
         } else {
-            reject("Cant delete quote by id:" + id);
+            reject("Can't delete quote by id: " + id);
         }
-    })
+    } );
 }
 
-function updateById(id, updateFields){
-    return new Promise ( async (resolve, reject)=> {
+function updateById(id, updateFields) {
+    return new Promise( async (resolve, reject) => {
         const collection = await MongoSingleton.getCollection();
         const result = await collection.updateOne({
-            _id : ObjectId(id)
-        }, 
-    { $set: updateFields});
-    if(result && result.matchedCount > 0){
-        resolve(result);
-    } else {
-        reject("Cant update quote by id:" + id)
-    }
-    })
-}
+            _id: ObjectId(id)
+        },
+        { $set: updateFields });
 
-function insertOne(quote){
-    return new Promise ( async (resolve, reject)=> {
-        const collection = await MongoSingleton.getCollection();
-        const result = await collection.insertOne(quote);
-        if(result && result.insertedId ) {
+        if (result && result.matchedCount > 0) {
             resolve(result);
         } else {
-            reject("Cant insert new quote")
+            reject("Can't update quote by id: " + id);
         }
-    })
+    } );
 }
+
+function insertOne(quote) {
+    return new Promise( async (resolve, reject) => {
+        const collection = await MongoSingleton.getCollection();
+        const result = await collection.insertOne(quote);
+
+        if (result && result.insertedId) {
+            resolve(result);
+        } else {
+            reject("Can't insert new quote");
+        }
+    } );
+}
+
 
 module.exports = {
     getAll,
@@ -90,7 +92,7 @@ module.exports = {
     saveAll,
     deleteById,
     updateById,
-    insertOne
+    insertOne 
 };
 
 

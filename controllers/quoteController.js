@@ -65,7 +65,7 @@ async function prepareDB() {
 async function deleteById(id) {
     try {
         const result = await Quote.deleteById(id);
-    } catch (err){
+    } catch (err) {
         console.error(err);
         return null;
     }
@@ -73,8 +73,9 @@ async function deleteById(id) {
 
 async function updateById(id, quote) {
     try {
-        const result = await Quote.updateByIdById(id, quote);
-    } catch (err){
+        const result = await Quote.updateById(id, quote);
+        return result;
+    } catch (err) {
         console.error(err);
         return null;
     }
@@ -83,18 +84,16 @@ async function updateById(id, quote) {
 async function insertOne(quote) {
     try {
         const result = await Quote.insertOne(quote);
-        if( result && result.insertedId){
+        if (result && result.insertedId) {
             return result;
         } else {
             return null;
         }
-    } catch (err){
+    } catch (err) {
         console.error(err);
         return null;
     }
 }
-
-
 
 module.exports = {
     getQuote,

@@ -1,6 +1,6 @@
 
 const http = require("http");
-const {getQuotes, getQuote, getRandom, prepareDB} = require("./controllers/quoteController");
+const {getQuotes, getQuote, getRandom, prepareDB, insertOne, deleteById} = require("./controllers/quoteController");
 const {serveStaticFile} = require("./util/staticServer");
 
 const PORT = 8080;
@@ -48,6 +48,59 @@ const server = http.createServer( async function(req, res) {
         }
 
         res.end( JSON.stringify(quote) );
+    } else 
+    if (req.url === "/api/quote/save" && req.method === "POST") {
+        let data = "";
+
+        req.on("data", function (chunk) {
+            data += chunk;
+        });
+
+        req.on("end", async function() {
+            const quote = JSON.parse(data); 
+
+            let response = {};
+            const result = await insertOne(quote);
+
+            if (result) {
+                res.writeHead(200);
+                response = { saved: true, _id: result.insertedId };
+            } else {
+                res.writeHead(404);
+                response = { saved: false, _id: null };
+            }
+
+            res.end( JSON.stringify(response) );
+        });
+
+    } else 
+    if (req.url === "/api/quote/delete" && req.method === "POST") {
+        let data = ""; 
+        req.on("data", function (chunk) {
+            data += chunk;
+        });
+
+        req.on("end", async function() {
+            const quote = JSON.parse(data);
+
+            if (!quote || !quote._id) {
+                res.end( JSON.stringify({ message: "Bad id" }) );
+                return;
+            } 
+
+            let response = {};
+            const result = await deleteById(quote._id);
+
+            if (result && result.deletedCount > 0) {
+                res.writeHead(200);
+                response = { deleted: true };
+            } else {
+                res.writeHead(404);
+                response = { deleted: false };
+            }
+
+            res.end( JSON.stringify(response) );
+        });
     }
     else {
         serveStaticFile(req, res);
